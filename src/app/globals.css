@@ -2,20 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+
+.toolbar-btn {
+  @apply p-3 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200 text-gray-700 shadow-sm;
+  min-width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.toolbar-btn svg {
+  width: 18px;
+  height: 18px;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+.toolbar-btn:hover {
+  background-color: #d1d5db;
 }
+
