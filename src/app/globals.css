@@ -3,20 +3,32 @@
 @tailwind utilities;
 
 
-.toolbar-btn {
-  @apply p-3 bg-gray-200 rounded-md hover:bg-gray-300 transition duration-200 text-gray-700 shadow-sm;
-  min-width: 40px;
+.ads-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.ad-left, .ad-right {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.content-container {
+  flex: 3;
+  padding: 10px;
+}
+
+.modal-overlay {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.toolbar-btn svg {
-  width: 18px;
-  height: 18px;
-}
-
-.toolbar-btn:hover {
-  background-color: #d1d5db;
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

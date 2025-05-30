@@ -1,22 +1,31 @@
 'use client'
 import React, { useState } from 'react';
-import logo from '../assets/logo.webp';
+import { usePathname } from 'next/navigation';
 import { AiOutlineArrowRight } from "react-icons/ai";
+import Image from 'next/image';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <nav className="bg-white text-black top-0 left-0 w-full z-50">
+    <nav className="bg-gray-100 text-black sticky top-0 left-0 w-full z-50 shadow-sm">
       <div className="mx-3 md:mx-10 lg:mx-18">
         <div className="container mx-auto flex items-center justify-between p-1">
           {/* Logo */}
           <div className="flex items-center">
-            <img src={logo} alt="Logo" className="h-16 w-16 mr-5" />
+            <Image 
+              src="/logo.webp" 
+              alt="Logo" 
+              width={64} 
+              height={64} 
+              className="h-16 w-16 mr-5" 
+              priority // Important for above-the-fold images
+            />
           </div>
 
           {/* Desktop Navigation Links */}
@@ -24,8 +33,8 @@ const NavBar = () => {
             <a
               href="/"
               className={`text-lg font-semibold ${
-                location.pathname === '/' ? 'text-[#4caf4f]' : 'text-gray-800'
-              } hover:text-[#4caf4f]`}
+                pathname === '/' ? 'text-[#4caf4f]' : 'text-gray-800'
+              } hover:text-[#4caf4f] transition-colors`}
             >
               Home
             </a>
@@ -33,8 +42,8 @@ const NavBar = () => {
             <a
               href="/blog"
               className={`text-lg font-semibold ${
-                location.pathname === '/services' ? 'text-[#4caf4f]' : 'text-gray-800'
-              } hover:text-[#4caf4f]`}
+                pathname === '/blog' ? 'text-[#4caf4f]' : 'text-gray-800'
+              } hover:text-[#4caf4f] transition-colors`}
             >
               Blog
             </a>
@@ -42,8 +51,8 @@ const NavBar = () => {
             <a
               href="/tools"
               className={`text-lg font-semibold ${
-                location.pathname === '/about' ? 'text-[#4caf4f]' : 'text-gray-800'
-              } hover:text-[#4caf4f]`}
+                pathname === '/tools' ? 'text-[#4caf4f]' : 'text-gray-800'
+              } hover:text-[#4caf4f] transition-colors`}
             >
               Tools
             </a>
@@ -51,102 +60,105 @@ const NavBar = () => {
             <a
               href="/services"
               className={`text-lg font-semibold ${
-                location.pathname === '/my-work' ? 'text-[#4caf4f]' : 'text-gray-800'
-              } hover:text-[#4caf4f]`}
+                pathname === '/services' ? 'text-[#4caf4f]' : 'text-gray-800'
+              } hover:text-[#4caf4f] transition-colors`}
             >
               Our Services
             </a>
 
-            <a
+            {/* <a
               href="/e-book"
               className={`text-lg font-semibold ${
-                location.pathname === '/contact' ? 'text-[#4caf4f]' : 'text-gray-800'
-              } hover:text-[#4caf4f]`}
+                pathname === '/e-book' ? 'text-[#4caf4f]' : 'text-gray-800'
+              } hover:text-[#4caf4f] transition-colors`}
             >
               E-Book
-            </a>
+            </a> */}
 
-            {/* Register Button with UserPlus Icon */}
+            {/* Register Button with Arrow Icon */}
             <a
               href="/register"
-              className="bg-[#4caf4f] text-white py-2 px-6 rounded-lg flex items-center space-x-2 hover:bg-[#6a9b52] transition duration-300"
+              className="bg-[#4caf4f] text-white py-2 px-6 rounded-lg flex items-center space-x-2 hover:bg-[#3d8b40] transition-colors duration-300"
             >
               <span>Register</span>
               <AiOutlineArrowRight className="w-5 h-5" />
             </a>
           </div>
 
-          {/* Mobile Menu Icon */}
+          {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center">
-            <button onClick={toggleMenu} className="focus:outline-none">
+            <button 
+              onClick={toggleMenu} 
+              className="focus:outline-none"
+              aria-label="Toggle menu"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
-                viewBox="0 0 25 25"
+                viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-10 h-10 text-black hover:text-[#4caf4f]"
+                className="w-10 h-10 text-black hover:text-[#4caf4f] transition-colors"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 6h18M3 12h18m-7 6h7" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Links */}
+        {/* Mobile Navigation Menu */}
         {isOpen && (
-          <div className="md:hidden bg-white text-black shadow-lg mt-2 rounded-lg">
-            <div className="flex flex-col space-y-2 p-4">
+          <div className="md:hidden bg-white text-black shadow-lg rounded-lg mt-1">
+            <div className="flex flex-col space-y-3 p-4">
               <a
                 href="/"
-                className={`text-lg font-semibold ${
-                  location.pathname === '/' ? 'text-[#4caf4f]' : 'text-gray-800'
-                } hover:text-[#4caf4f]`}
+                className={`text-lg font-semibold py-2 px-4 rounded ${
+                  pathname === '/' ? 'text-[#4caf4f] bg-gray-100' : 'text-gray-800'
+                } hover:text-[#4caf4f] hover:bg-gray-50 transition-colors`}
                 onClick={toggleMenu}
               >
                 Home
               </a>
               <a
                 href="/blog"
-                className={`text-lg font-semibold ${
-                  location.pathname === '/services' ? 'text-[#4caf4f]' : 'text-gray-800'
-                } hover:text-[#4caf4f]`}
+                className={`text-lg font-semibold py-2 px-4 rounded ${
+                  pathname === '/blog' ? 'text-[#4caf4f] bg-gray-100' : 'text-gray-800'
+                } hover:text-[#4caf4f] hover:bg-gray-50 transition-colors`}
                 onClick={toggleMenu}
               >
                 Blog
               </a>
               <a
                 href="/tools"
-                className={`text-lg font-semibold ${
-                  location.pathname === '/about' ? 'text-[#4caf4f]' : 'text-gray-800'
-                } hover:text-[#4caf4f]`}
+                className={`text-lg font-semibold py-2 px-4 rounded ${
+                  pathname === '/tools' ? 'text-[#4caf4f] bg-gray-100' : 'text-gray-800'
+                } hover:text-[#4caf4f] hover:bg-gray-50 transition-colors`}
                 onClick={toggleMenu}
               >
                 Tools
               </a>
               <a
                 href="/services"
-                className={`text-lg font-semibold ${
-                  location.pathname === '/my-work' ? 'text-[#4caf4f]' : 'text-gray-800'
-                } hover:text-[#4caf4f]`}
+                className={`text-lg font-semibold py-2 px-4 rounded ${
+                  pathname === '/services' ? 'text-[#4caf4f] bg-gray-100' : 'text-gray-800'
+                } hover:text-[#4caf4f] hover:bg-gray-50 transition-colors`}
                 onClick={toggleMenu}
               >
                 Our Services
               </a>
-              <a
+              {/* <a
                 href="/e-book"
-                className={`text-lg font-semibold ${
-                  location.pathname === '/contact' ? 'text-[#4caf4f]' : 'text-gray-800'
-                } hover:text-[#4caf4f]`}
+                className={`text-lg font-semibold py-2 px-4 rounded ${
+                  pathname === '/e-book' ? 'text-[#4caf4f] bg-gray-100' : 'text-gray-800'
+                } hover:text-[#4caf4f] hover:bg-gray-50 transition-colors`}
                 onClick={toggleMenu}
               >
                 E-Book
-              </a>
+              </a> */}
 
-              {/* Register Button with UserPlus Icon */}
               <a
                 href="/register"
-                className="bg-[#4caf4f] text-white py-2 px-6 rounded-lg flex items-center space-x-2 hover:bg-[#6a9b52] transition duration-300"
+                className="bg-[#4caf4f] text-white py-2 px-6 rounded-lg flex items-center justify-center space-x-2 hover:bg-[#3d8b40] transition-colors duration-300 mt-2"
                 onClick={toggleMenu}
               >
                 <span>Register</span>

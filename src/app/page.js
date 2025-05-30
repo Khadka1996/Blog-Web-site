@@ -6,6 +6,7 @@ import OurTools from './components/body/ourTools';
 import TopBody from './components/body/topbody';
 import Footer from './components/footer/footer';
 import NavBar from './components/header/navbar';
+import WhatsAppButton from './components/WhatsAppButton.js'; // Import the new component
 
 const Page = () => {
   return (
@@ -15,8 +16,11 @@ const Page = () => {
         <NavBar />
       </div>
 
+      {/* Add the WhatsApp button */}
+      <WhatsAppButton />
+
       {/* Add padding-top to the first section to prevent content from being hidden behind the NavBar */}
-      <div className="pt-20"> {/* Adjust padding-top based on NavBar height */}
+      <div className="pt-20">
         <TopBody />
         <OurClients />
         <OurTools />

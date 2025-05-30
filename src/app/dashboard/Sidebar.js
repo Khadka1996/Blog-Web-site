@@ -1,93 +1,265 @@
 'use client';
-
-import { useState, memo } from 'react';
-import { FaHome, FaBars, FaChevronDown, FaChevronUp , FaUser, FaCog, FaSignOutAlt, FaChartBar, FaAd, FaBook, FaEnvelope, FaUsers, FaBlog, FaPlus, FaEdit } from 'react-icons/fa';
-import {MdAdminPanelSettings } from 'react-icons/md';
+import { useState } from 'react';
 import Link from 'next/link';
+import { Layout, Menu, Button, Avatar, Divider, Tooltip, theme, Badge } from 'antd';
+import {
+  HomeOutlined,
+  UserOutlined,
+  TeamOutlined,
+  FileOutlined,
+  FileAddOutlined,
+  EditOutlined,
+  SettingOutlined,
+  LogoutOutlined,
+  DashboardOutlined,
+  AppstoreOutlined,
+  BookOutlined,
+  BarChartOutlined,
+  MailOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  PlusOutlined,
+  MessageOutlined,
+  CommentOutlined,
+  NotificationOutlined,
+  WechatOutlined
+} from '@ant-design/icons';
+const { Sider } = Layout;
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [blogDropdown, setBlogDropdown] = useState(false);
-  const [adsDropdown, setAdsDropdown] = useState(false);
+const Sidebar = ({ user, collapsed, setCollapsed }) => {
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  const [selectedKey, setSelectedKey] = useState('dashboard');
+  const [openKeys, setOpenKeys] = useState(['user-management']);
+  
+  // Mock data for notifications - replace with real data
+  const [notificationCounts, setNotificationCounts] = useState({
+    messages: 5,
+    reportedComments: 3,
+    liveChats: 2
+  });
+
+  const onOpenChange = (keys) => {
+    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
+    setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+  };
+
+  const menuItems = [
+    {
+      key: 'dashboard',
+      icon: <DashboardOutlined />,
+      label: <Link href="/dashboard">Dashboard</Link>,
+    },
+    {
+      key: 'user-management',
+      icon: <UserOutlined />,
+      label: 'User Management',
+      children: [
+        {
+          key: 'users',
+          label: <Link href="/dashboard/user-management">All Users</Link>,
+        },
+        {
+          key: 'moderators',
+          label: <Link href="/dashboard/mod-management">Moderators</Link>,
+        },
+      ],
+    },
+    {
+      key: 'blog',
+      icon: <FileOutlined />,
+      label: 'Blog Management',
+      children: [
+        {
+          key: 'add-blog',
+          icon: <PlusOutlined />,
+          label: <Link href="/dashboard/blog/add">Add Blog Post</Link>,
+        },
+        {
+          key: 'edit-blog',
+          icon: <EditOutlined />,
+          label: <Link href="/dashboard/blog/edit">Edit Blog Posts</Link>,
+        },
+      ],
+    },
+    {
+      key: 'communication',
+      icon: <MailOutlined />,
+      label: 'Communication',
+      children: [
+        {
+          key: 'messages',
+          icon: (
+            <Badge count={notificationCounts.messages} size="small" offset={[5, 0]}>
+              <MessageOutlined />
+            </Badge>
+          ),
+          label: <Link href="/dashboard/messages">Messages</Link>,
+        },
+        {
+          key: 'live-chat',
+          icon: (
+            <Badge count={notificationCounts.liveChats} size="small" offset={[5, 0]}>
+              <WechatOutlined />
+            </Badge>
+          ),
+          label: <Link href="/dashboard/chat">Live Chat</Link>,
+        },
+      ],
+    },
+    {
+      key: 'comments',
+      icon: <CommentOutlined />,
+      label: 'Comment Management',
+      children: [
+        {
+          key: 'all-comments',
+          label: <Link href="/dashboard/comments">All Comments</Link>,
+        },
+        {
+          key: 'reported-comments',
+          icon: (
+            <Badge count={notificationCounts.reportedComments} size="small" offset={[5, 0]}>
+              <NotificationOutlined />
+            </Badge>
+          ),
+          label: <Link href="/dashboard/comments/reported">Reported Comments</Link>,
+        },
+        {
+          key: 'comment-settings',
+          label: <Link href="/dashboard/comments/settings">Settings</Link>,
+        },
+      ],
+    },
+    {
+      key: 'services',
+      icon: <AppstoreOutlined />,
+      label: <Link href="/dashboard/services">Services</Link>,
+    },
+    {
+      key: 'clients',
+      icon: <TeamOutlined />,
+      label: <Link href="/dashboard/client-management">Client Management</Link>,
+    },
+    {
+      key: 'analytics',
+      icon: <BarChartOutlined />,
+      label: <Link href="/dashboard/analytics">Analytics</Link>,
+    },
+    {
+      key: 'settings',
+      icon: <SettingOutlined />,
+      label: <Link href="/dashboard/settings">Settings</Link>,
+    },
+  ];
 
   return (
-    <div className="flex">
-      <div className={`h-screen bg-gray-900 text-white p-4 transition-all duration-300 ${isOpen ? 'w-64' : 'w-24'}`}>
-        <button className="mb-7" onClick={() => setIsOpen(prev => !prev)} title="Menu">
-          <FaBars size={24} />
-        </button>
-        <nav className="space-y-4">
-          <SidebarItem icon={<FaHome size={24} />} text="Home" link="/" isOpen={isOpen} />
-          <SidebarItem icon={<FaUser size={24} />} text="User Management" link="/dashboard/user-management" isOpen={isOpen} />
-          <SidebarItem icon={<MdAdminPanelSettings size={24} />} text="Mod Management" link="/dashboard/mod-management" isOpen={isOpen} />
-          <div className="h-[1px] bg-gray-700 my-2"></div>
+    <Sider
+      width={256}
+      collapsedWidth={80}
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+      theme="dark"
+      className="!bg-[#25609A] "
 
-          <Dropdown 
-            title="Blog" 
-            icon={<FaBlog size={24} />} 
-            isOpen={isOpen} 
-            dropdownState={blogDropdown} 
-            setDropdownState={setBlogDropdown} 
-            items={[{ icon: <FaPlus size={20} />, text: 'Add Blog', link: '/dashboard/blog/add' }, { icon: <FaEdit size={20} />, text: 'Edit Blog', link: '/dashboard/blog/edit' }]} 
+      style={{
+        overflow: 'auto',
+        height: '100vh',
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        zIndex: 100,
+        boxShadow: '2px 0 8px 0 rgba(0, 0, 0, 0.15)',
+        
+      }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Logo/Collapse Button */}
+        <div className="flex items-center justify-between p-4">
+          {!collapsed ? (
+            <div className="text-white font-bold text-lg">Admin Panel</div>
+          ) : null}
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '16px',
+              width: 64,
+              height: 64,
+              color: '#fff',
+            }}
           />
+        </div>
 
-          <div className="h-[1px] bg-gray-700 my-2"></div>
-          
-          <Dropdown 
-            title="Ads" 
-            icon={<FaAd size={24} />} 
-            isOpen={isOpen} 
-            dropdownState={adsDropdown} 
-            setDropdownState={setAdsDropdown} 
-            items={[{ icon: <FaPlus size={20} />, text: 'Add Ads', link: '/dashboard/ads/add' }, { icon: <FaEdit size={20} />, text: 'Edit Ads', link: '/dashboard/ads/edit' }]} 
-          />
+        {/* User Profile */}
+        {!collapsed && (
+          <div className="flex items-center p-4 mb-2">
+            <Avatar 
+              size="large" 
+              src={user?.avatar} 
+              icon={<UserOutlined />}
+              className="mr-3"
+            />
+            <div>
+              <div className="text-white font-medium">{user?.name}</div>
+              <div className="text-gray-400 text-xs">{user?.role}</div>
+            </div>
+          </div>
+        )}
 
-          <hr className="border-gray-700 my-2" />
-          <SidebarItem icon={<FaUsers size={24} />} text="Client Management" link="/dashboard/client-management" isOpen={isOpen} />
-          <SidebarItem icon={<FaEnvelope size={24} />} text="Messages" link="/dashboard/messages" isOpen={isOpen} />
-          <SidebarItem icon={<FaBook size={24} />} text="Books" link="/dashboard/books" isOpen={isOpen} />
-          <SidebarItem icon={<FaChartBar size={24} />} text="Analytics" link="/dashboard/analytics" isOpen={isOpen} />
-          <SidebarItem icon={<FaCog size={24} />} text="Settings" link="/dashboard/settings" isOpen={isOpen} />
-          <SidebarItem icon={<FaSignOutAlt size={24} />} text="Logout" link="/dashboard/logout" isOpen={isOpen} />
-        </nav>
+        {collapsed && (
+          <div className="flex justify-center p-4">
+            <Avatar 
+              size="default" 
+              src={user?.avatar} 
+              icon={<UserOutlined />}
+            />
+          </div>
+        )}
+
+        <Divider className="bg-gray-600 m-0" />
+
+        {/* Main Menu */}
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[selectedKey]}
+          openKeys={openKeys}
+          onOpenChange={onOpenChange}
+          items={menuItems}
+          className="!bg-[#25609A]"
+
+          style={{
+            borderRight: 0,
+            flex: 1,
+            overflow: 'auto',
+          }}
+          onClick={({ key }) => setSelectedKey(key)}
+        />
+
+        {/* Footer/Logout */}
+        <div className="p-4">
+          <Tooltip title="Logout" placement="right" trigger={collapsed ? ['hover'] : []}>
+            <Button
+              type="text"
+              icon={<LogoutOutlined />}
+              className="w-full"
+              onClick={() => {
+            fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
+              .then(() => window.location.href = '/login');
+          }}
+            >
+              {!collapsed && 'Logout'}
+            </Button>
+          </Tooltip>
+        </div>
       </div>
-    </div>
-  );
-};
-
-const SidebarItem = memo(({ icon, text, link, isOpen }) => {
-  return (
-    <Link href={link} className="flex items-center space-x-4 p-2 rounded-md hover:bg-gray-700" title={text}>
-      {icon}
-      {isOpen && <span className="text-lg">{text}</span>}
-    </Link>
-  );
-});
-
-const Dropdown = ({ title, icon, isOpen, dropdownState, setDropdownState, items }) => {
-  return (
-    <div>
-      <button 
-        className="flex items-center justify-between p-2 w-full rounded-md hover:bg-gray-700" 
-        onClick={() => setDropdownState(!dropdownState)} 
-        title={title}
-      >
-        <div className="flex items-center space-x-4">
-          {icon}
-          {isOpen && <span className="text-lg">{title}</span>}
-        </div>
-        <span>
-          {dropdownState ? <FaChevronUp size={16} /> : <FaChevronDown size={16} />}
-        </span>
-      </button>
-      {dropdownState && (
-        <div className="ml-6 space-y-2">
-          {items.map((item, index) => (
-            <SidebarItem key={index} icon={item.icon} text={item.text} link={item.link} isOpen={isOpen} />
-          ))}
-        </div>
-      )}
-    </div>
+    </Sider>
   );
 };
 

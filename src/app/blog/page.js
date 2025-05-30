@@ -4,21 +4,21 @@ import Footer from "../components/footer/footer";
 import NavBar from "../components/header/navbar";
 import BlogPage from "./blogpage";
 
-
+export const metadata = {
+  title: 'Blogs | Your Site Name',
+  description: 'Explore our latest articles and news',
+};
 const Page = () => {
   return (
     <main>
-      {/* Fixed NavBar at the top */}
       <div className="fixed top-0 left-0 w-full z-50">
         <NavBar/>
       </div>
-
-      {/* Add padding-top to the first section to prevent content from being hidden behind the NavBar */}
-      <div className="pt-20"> {/* Adjust padding-top based on NavBar height */}
-       <BlogPage/>
-<ArticlePart/>
-<ContactUs/>
-<Footer/>
+      <div className="pt-20">
+        <BlogPage />
+        <ArticlePart />
+        <ContactUs />
+        <Footer />
       </div>
     </main>
   );

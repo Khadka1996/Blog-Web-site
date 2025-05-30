@@ -1,129 +1,242 @@
-"use client"; // Mark this as a Client Component
-import React, { useState } from "react"; // Add useState to the import
-import Link from "next/link";
+// app/blog/page.js
+import React, { Suspense } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import BlogSearch from './BlogSearch';
+import BlogSkeleton from './BlogSkeleton';
+import LikeButton from './LikeButton';
 
-const BlogPage = () => {
-  // Example blog data
-  const blogs = [
-    {
-      id: 1,
-      title: "The Future of Artificial Intelligence",
-      description:
-        "Discover how AI is transforming industries and what the future holds for this groundbreaking technology.",
-      image: "https://images.ctfassets.net/zojzzdop0fzx/4cD0dBRuVthvHEcsOqAJqC/59949b31c7387ddfe4b923859af85c69/How_to_build_an_AI_assistant_with_OpenAI__Vercel_AI_SDK__and_Ollama_with_Next.js.png?fm=webp&w=3840&q=75",
-      date: "October 25, 2023",
-    },
-    {
-      id: 2,
-      title: "10 Tips for Better Productivity",
-      description:
-        "Learn practical tips to boost your productivity and make the most of your day.",
-      image: "https://media.istockphoto.com/id/1332953647/photo/asian-chinese-mid-adult-female-astronaut-looking-at-earth-through-window-from-spaceship-at.jpg?s=612x612&w=0&k=20&c=4Yh6cjHO4mENUfjOHQBfBBt41tXP5x4nFqZiOyTkeJg=",
-      date: "October 20, 2023",
-    },
-    {
-      id: 3,
-      title: "Healthy Eating on a Budget",
-      description:
-        "Find out how to eat healthy without breaking the bank with these budget-friendly tips.",
-      image: "https://images.squarespace-cdn.com/content/v1/6192b02960e94236fc22acce/4f8e3f15-f2c3-4708-a52c-d00b7fb4d630/blog+plausible+futures.jpg",
-      date: "October 15, 2023",
-    },
-    {
-      id: 4,
-      title: "The Impact of Technology on Education",
-      description:
-        "Explore how technology is reshaping the education sector and improving learning outcomes.",
-      image: "https://www.worldbank.org/content/dam/photos/780x439/2017/feb-1/GEP-images-GM-780x439.jpg",
-      date: "October 10, 2023",
-    },
-    {
-      id: 5,
-      title: "Sustainable Living: A Beginner's Guide",
-      description:
-        "Learn how to adopt sustainable practices in your daily life and reduce your environmental footprint.",
-      image: "https://images.squarespace-cdn.com/content/v1/6192b02960e94236fc22acce/4f8e3f15-f2c3-4708-a52c-d00b7fb4d630/blog+plausible+futures.jpg",
-      date: "October 5, 2023",
-    },
-    {
-      id: 6,
-      title: "The Rise of Remote Work",
-      description:
-        "Understand the benefits and challenges of remote work and how it is changing the workplace.",
-      image: "https://images.ctfassets.net/zojzzdop0fzx/1U4NzoLxf6hZ8uc6u6fIvF/0dadecbe800d8a68e0a3959bd7f17aea/Tim_Neutkens_Talks__1_.png?fm=webp&w=3840&q=75",
-      date: "October 1, 2023",
-    },
-  ];
+const ITEMS_PER_PAGE = 12;
 
-  // State for search query
-  const [searchQuery, setSearchQuery] = useState("");
+const BlogPage = async ({ searchParams = {} }) => {
+  const page = parseInt(searchParams.page) || 1;
+  const searchQuery = searchParams.search || '';
 
-  // Filter blogs based on search query
-  const filteredBlogs = blogs.filter(
-    (blog) =>
-      blog.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      blog.description.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  try {
+    // Build API URL with pagination and search parameters
+    const apiUrl = new URL('http://localhost:5000/api/blogs');
+    apiUrl.searchParams.set('page', page);
+    apiUrl.searchParams.set('limit', ITEMS_PER_PAGE);
+    if (searchQuery) {
+      apiUrl.searchParams.set('search', searchQuery);
+    }
+
+    const res = await fetch(apiUrl.toString(), {
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const blogData = await res.json();
+    const blogs = blogData.data || [];
+    const totalPages = Math.ceil(blogData.total / ITEMS_PER_PAGE);
+
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <BlogSearch />
+
+        {/* Search results header */}
+        {searchQuery && (
+          <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold text-gray-800">
+              Search Results for: <span className="text-blue-600">"{searchQuery}"</span>
+            </h2>
+            <p className="text-gray-500 mt-2">
+              Found {blogData.count} article{blogData.count !== 1 ? 's' : ''}
+            </p>
+          </div>
+        )}
+
+        <Suspense fallback={<BlogSkeleton count={ITEMS_PER_PAGE} />}>
+          {blogs.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">
+                {searchQuery
+                  ? `No articles found for "${searchQuery}"`
+                  : 'No articles available. Check back later!'}
+              </p>
+              {searchQuery && (
+                <Link
+                  href="/blog"
+                  className="mt-4 inline-block px-4 py-2 bg-[#51A94C] text-white rounded-md hover:bg-[#4A8E45] transition-colors"
+                >
+                  Clear Search
+                </Link>
+              )}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {blogs.map((blog) => (
+                  <BlogCard key={blog._id} blog={blog} />
+                ))}
+              </div>
+              {blogs.length > 0 && (
+                <Pagination page={page} totalPages={totalPages} searchQuery={searchQuery} />
+              )}
+            </>
+          )}
+        </Suspense>
+      </div>
+    );
+  } catch (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading Content</h2>
+          <p className="text-gray-500">We couldn't load the blog posts. Please try again later.</p>
+          <Link
+            href="/blog"
+            className="mt-4 px-4 py-2 bg-[#51A94C] text-white rounded-md hover:bg-[#4A8E45] transition-colors inline-block"
+          >
+            Retry
+          </Link>
+        </div>
+      </div>
+    );
+  }
+};
+
+// Blog Card Component
+const BlogCard = ({ blog }) => (
+  <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 flex flex-col">
+    {blog.image && (
+      <div className="relative h-48 w-full">
+        <Image
+          src={`http://localhost:5000/uploads/${blog.image}`}
+          alt={blog.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          priority={false}
+        />
+      </div>
+    )}
+    <div className="p-6 flex-grow flex flex-col">
+      <h2 className="text-xl font-semibold text-gray-800 mb-2 line-clamp-2">
+        {blog.title}
+      </h2>
+      <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-4">
+        <span>
+          {new Date(blog.createdAt).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+          })}
+        </span>
+        <div className="flex items-center space-x-4">
+          <span className="flex items-center">
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+            {blog.viewCount || 0}
+          </span>
+          <LikeButton blogId={blog._id} initialCount={blog.likeCount || 0} />
+        </div>
+      </div>
+      <Link
+        href={`/blog/${blog._id}`}
+        className="mt-4 inline-block px-4 py-2 bg-[#51A94C] text-white rounded-md hover:bg-[#4A8E45] transition-colors text-center"
+        aria-label={`Read more about ${blog.title}`}
+      >
+        Read More
+      </Link>
+    </div>
+  </article>
+);
+
+// Pagination Component
+const Pagination = ({ page, totalPages, searchQuery }) => {
+  const getPageUrl = (pageNum) => {
+    const params = new URLSearchParams();
+    params.set('page', pageNum);
+    if (searchQuery) {
+      params.set('search', searchQuery);
+    }
+    return `/blog?${params.toString()}`;
+  };
+
+  // Calculate page numbers to display
+  const getPageNumbers = () => {
+    const pages = [];
+    const maxVisiblePages = 5;
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      const half = Math.floor(maxVisiblePages / 2);
+      let start = Math.max(1, page - half);
+      let end = Math.min(totalPages, start + maxVisiblePages - 1);
+
+      if (end - start + 1 < maxVisiblePages) {
+        start = Math.max(1, end - maxVisiblePages + 1);
+      }
+
+      if (start > 1) pages.push(1);
+      if (start > 2) pages.push('...');
+
+      for (let i = start; i <= end; i++) {
+        pages.push(i);
+      }
+
+      if (end < totalPages - 1) pages.push('...');
+      if (end < totalPages) pages.push(totalPages);
+    }
+
+    return pages;
+  };
 
   return (
-    <div className="bg-gray-100 py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Heading and Search Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-6 md:mb-0">
-            Our Blog
-          </h1>
-
-          {/* Search Bar */}
-          <div className="w-full md:w-1/3">
-            <input
-              type="text"
-              placeholder="Search blogs..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#52aa4d]"
-            />
-          </div>
-        </div>
-
-        {/* Blog Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredBlogs.map((blog) => ( // Use filteredBlogs instead of blogs
-            <div
-              key={blog.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+    <div className="mt-12 flex justify-center">
+      <div className="flex items-center space-x-2">
+        {page > 1 && (
+          <Link
+            href={getPageUrl(page - 1)}
+            className="px-4 py-2 border rounded-md hover:bg-gray-100"
+          >
+            Previous
+          </Link>
+        )}
+        {getPageNumbers().map((pageNum, index) =>
+          pageNum === '...' ? (
+            <span key={`ellipsis-${index}`} className="px-4 py-2">
+              ...
+            </span>
+          ) : (
+            <Link
+              key={pageNum}
+              href={getPageUrl(pageNum)}
+              className={`px-4 py-2 border rounded-md ${
+                page === pageNum ? 'bg-[#4A8E45] text-white' : 'hover:bg-gray-100'
+              }`}
             >
-              {/* Blog Image */}
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="w-full h-48 object-cover"
-              />
-
-              {/* Blog Content */}
-              <div className="p-6">
-                {/* Blog Date */}
-                <p className="text-sm text-gray-500 mb-2">{blog.date}</p>
-
-                {/* Blog Title */}
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                  {blog.title}
-                </h2>
-
-                {/* Blog Description */}
-                <p className="text-gray-700 mb-6">{blog.description}</p>
-
-                {/* Read More Button */}
-                <Link
-                  href={`/blog/${blog.id}`} // Link to the full blog post
-                  className="inline-block px-6 py-2 bg-[#52aa4d] text-white rounded-lg hover:bg-[#428a3d] transition-colors"
-                >
-                  Read More
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+              {pageNum}
+            </Link>
+          )
+        )}
+        {page < totalPages && (
+          <Link
+            href={getPageUrl(page + 1)}
+            className="px-4 py-2 border rounded-md hover:bg-gray-100"
+          >
+            Next
+          </Link>
+        )}
       </div>
     </div>
   );
