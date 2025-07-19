@@ -10,7 +10,7 @@ export default function LikeButton({ blogId, initialCount }) {
     if (loading || liked) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/blogs/${blogId}/like`, { method: "POST" });
+      const res = await fetch(`https://api.everestkit.com/api/blogs/${blogId}/like`, { method: "POST" });
 
       if (res.ok) {
         const data = await res.json();

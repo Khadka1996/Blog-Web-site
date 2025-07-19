@@ -1,109 +1,85 @@
-'use client';
-import React from 'react';
-import Image from 'next/image';
-
-// JSON Object with external image URLs
-const clientsData = {
-  clients: [
-    {
-      id: 1,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 1',
-    },
-    {
-      id: 2,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 2',
-    },
-    {
-      id: 3,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 3',
-    },
-    {
-      id: 4,
-      src: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg',
-      alt: 'Client 4',
-    },
-    {
-      id: 5,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 5',
-    },
-    {
-      id: 6,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 6',
-    },
-    {
-      id: 7,
-      src: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
-      alt: 'Client 7',
-    },
-    {
-      id: 8,
-      src: 'https://assets.turbologo.com/assets/landing/logo_maker/how-3-958346d0e544dc23c2ed0c1bfa39bd736f2d88b2d8b53e14333252803e703832.svg',
-      alt: 'Client 8',
-    },
-  ],
-};
+'use client'
+import React from 'react'
+import Image from 'next/image'
+import Facebook from './clientAssets/Facebook ads-1.svg'
+import Tiktok from './clientAssets/tiktok.png'
+import Instagram from './clientAssets/instagram-ads-logo.webp'
+import Youtube from './clientAssets/youtube.jpg'
+import Google from './clientAssets/google.webp'
+import Bing from './clientAssets/bing.webp'
+import X from './clientAssets/x.png'
 
 const OurClients = () => {
+  const clients = [
+    { id: 1, src: Tiktok, alt: 'TikTok Ads' },
+    { id: 2, src: Instagram, alt: 'Instagram Ads' },
+    { id: 3, src: Youtube, alt: 'YouTube Ads' },
+    { id: 4, src: Facebook, alt: 'Meta Ads' },
+    { id: 5, src: Google, alt: 'Google Ads' },
+    { id: 6, src: Bing, alt: 'Microsoft Ads' },
+    { id: 7, src: X, alt: 'X Platform Ads' }
+  ]
+
   return (
-    <div className="bg-gray-50 py-12">
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Clients</h2>
-        <p className="text-lg text-gray-600">
-          We have been working with some Fortune 500+ clients
-        </p>
+    <section className="relative bg-gray-50 py-16 md:py-20 lg:py-24 overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute left-0 top-1/4 h-32 w-32 rounded-full bg-[#4caf4f]/10 blur-3xl" />
+        <div className="absolute right-0 bottom-1/3 h-40 w-40 rounded-full bg-[#4caf4f]/05 blur-3xl" />
       </div>
 
-      {/* Marquee Effect */}
-      <div className="relative overflow-hidden">
-        <div className="flex w-max animate-marqueeSlow">
-          {clientsData.clients.map((client) => (
-            <div key={client.id} className="mx-8">
-              <Image
-                src={client.src}
-                alt={client.alt}
-                width={150}
-                height={80}
-                className="h-20 w-32 object-contain"
-                priority
-              />
-            </div>
-          ))}
-          {clientsData.clients.map((client) => (
-            <div key={`duplicate-${client.id}`} className="mx-8">
-              <Image
-                src={client.src}
-                alt={client.alt}
-                width={150}
-                height={80}
-                className="h-20 w-32 object-contain"
-                priority
-              />
-            </div>
-          ))}
+      <div className="mx-auto max-w-7xl px-6 sm:px-8 md:px-10 relative">
+        {/* Header */}
+        <div className="text-center mb-2">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-3">
+            Trusted by <span className="text-[#4caf4f]">Industry Leaders</span>
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Partnering with the world's top advertising platforms to deliver exceptional results
+          </p>
+        </div>
+
+        {/* Marquee Container */}
+        <div className="relative w-full">
+          {/* First Marquee Row */}
+          <div className="flex w-max animate-marquee items-center py-6 space-x-10 md:space-x-12">
+            {[...clients, ...clients].map((client, index) => (
+              <div key={`${client.id}-${index}`} className="flex-shrink-0">
+                <div className="relative h-16 w-32 sm:h-20 sm:w-40 transition-all duration-300 hover:scale-105">
+                  <Image
+                    src={client.src}
+                    alt={client.alt}
+                    fill
+                    className="object-contain object-center  transition-all duration-500"
+                    quality={90}
+                    sizes="(max-width: 768px) 160px, 200px"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+         
         </div>
       </div>
 
-      {/* Custom CSS Animation */}
-      <style jsx>{`
-        @keyframes marqueeSlow {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
+      {/* Animation Styles */}
+      <style jsx global>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-        .animate-marqueeSlow {
-          animation: marqueeSlow 20s linear infinite;
+        @keyframes marqueeReverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
         }
+        .animate-marquee {
+          animation: marquee 40s linear infinite;
+        }
+        
       `}</style>
-    </div>
-  );
-};
+    </section>
+  )
+}
 
-export default OurClients;
+export default OurClients

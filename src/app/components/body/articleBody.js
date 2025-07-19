@@ -5,8 +5,8 @@ import Link from 'next/link';
 const BlogPage = async ({ searchParams }) => {
   try {
     // Fetch blog data from backend API
-    const res = await fetch('http://localhost:5000/api/blogs/latest', {
-      cache: 'no-store', // Ensure fresh data (optional, added for immediate updates)
+    const res = await fetch('https://api.everestkit.com/api/blogs/latest', {
+      cache: 'no-store',
     });
 
     if (!res.ok) {
@@ -17,11 +17,15 @@ const BlogPage = async ({ searchParams }) => {
     const blogs = blogData.data || [];
 
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      // Adjusted padding and margins to match navbar
+      <div className="mx-5 md:mx-12 lg:mx-32 mt-5">
         {/* Latest Blogs Heading */}
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6 text-center">
-          Latest Blogs
-        </h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 text-center">
+  Latest Blogs & Articles
+</h1>
+<p className="text-lg text-gray-600 mb-8 text-center max-w-3xl mx-auto">
+  Discover insightful articles, industry trends, and expert perspectives from our team
+</p>
 
         {blogs.length === 0 ? (
           <div className="text-center py-12">
@@ -40,7 +44,7 @@ const BlogPage = async ({ searchParams }) => {
                 {blog.image && (
                   <div className="relative h-32 sm:h-36 w-full">
                     <Image
-                      src={`http://localhost:5000/uploads/${blog.image}`}
+                      src={`https://api.everestkit.com/uploads/${blog.image}`}
                       alt={blog.title || 'Blog image'}
                       fill
                       className="object-cover"
@@ -110,7 +114,7 @@ const BlogPage = async ({ searchParams }) => {
                   {/* Read More Button */}
                   <Link
                     href={`/blog/${blog._id}`}
-                    className="mt-3 inline-block px-3 py-1.5 bg-[#51A94C] text-white rounded-md hover:bg-[#4A8E45] transition-colors text-center text-xs sm:text-sm"
+                    className="mt-3 inline-block px-3 py-1.5 bg-[#4caf4f] text-white rounded-md hover:bg-[#3d8b40] transition-colors text-center text-xs sm:text-sm"
                     aria-label={`Read more about ${blog.title || 'this article'}`}
                   >
                     Read More
@@ -134,7 +138,7 @@ const BlogPage = async ({ searchParams }) => {
   } catch (error) {
     console.error('Error fetching blogs:', error);
     return (
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 lg:px-16 py-8 mt-4">
         <div className="text-center py-12">
           <h2 className="text-lg sm:text-xl font-semibold text-red-600 mb-2">
             Error Loading Content
@@ -144,7 +148,7 @@ const BlogPage = async ({ searchParams }) => {
           </p>
           <Link
             href="/blog"
-            className="mt-4 px-4 py-2 bg-[#51A94C] text-white rounded-md hover:bg-[#4A8E45] transition-colors inline-block text-sm sm:text-base"
+            className="mt-4 px-4 py-2 bg-[#4caf4f] text-white rounded-md hover:bg-[#3d8b40] transition-colors inline-block text-sm sm:text-base"
           >
             Retry
           </Link>

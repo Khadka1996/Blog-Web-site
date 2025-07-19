@@ -3,12 +3,13 @@ import Image from 'next/image';
 
 async function getTopArticle() {
   try {
-    const res = await fetch('http://localhost:5000/api/blogs/top-viewed', {
+    const res = await fetch('https://api.everestkit.com/api/blogs/top-viewed', {
+      cache: 'no-store'
     });
 
     if (!res.ok) {
       if (res.status === 404) {
-        return null; // Handle 404 gracefully
+        return null;
       }
       throw new Error(`Failed to fetch top article: ${res.statusText}`);
     }
@@ -22,52 +23,50 @@ async function getTopArticle() {
 }
 
 function TopArticleCard({ article }) {
-  // Remove HTML tags and truncate content
   const plainTextContent = (article.content || '').replace(/<[^>]+>/g, '');
   const truncatedContent = plainTextContent.length > 80
     ? `${plainTextContent.slice(0, 80)}...`
     : plainTextContent;
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6">
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 bg-white rounded-lg shadow-md p-6">
         {/* Image Column */}
-        <div className="flex items-center justify-center sm:col-span-1">
+        <div className="flex items-center justify-center md:col-span-1">
           {article.image ? (
             <Image
-              src={`http://localhost:5000/uploads/${article.image}`}
+              src={`https://api.everestkit.com/uploads/${article.image}`}
               alt={article.title || 'Top article image'}
               width={400}
               height={240}
-              className="w-full h-40 sm:h-48 object-cover rounded-lg shadow-lg hover:shadow-xl transition-shadow"
+              className="w-full h-48 object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow"
               sizes="(max-width: 640px) 100vw, 33vw"
               priority
             />
           ) : (
-            <div className="w-full h-40 sm:h-48 bg-gray-100 rounded-lg flex items-center justify-center">
-              <span className="text-gray-400 text-sm sm:text-base">No Image</span>
+            <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+              <span className="text-gray-400">No Image</span>
             </div>
           )}
         </div>
 
         {/* Content Column */}
-        <div className="flex flex-col justify-center sm:col-span-2">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-3 sm:mb-4">
+        <div className="flex flex-col justify-center md:col-span-2">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">
             {article.title || 'Untitled'}
           </h2>
 
           {article.subheading && (
-            <p className="text-gray-600 dark:text-gray-300 text-sm sm:text-base font-medium mb-2 sm:mb-3">
+            <p className="text-gray-600 text-sm md:text-base font-medium mb-3">
               {article.subheading}
             </p>
           )}
 
-          <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base mb-4 sm:mb-6">
+          <p className="text-gray-700 text-sm md:text-base mb-4">
             {truncatedContent}
           </p>
 
           {/* Stats */}
-          <div className="flex items-center justify-start text-xs sm:text-sm text-gray-100 mb-4 space-x-4 sm:space-x-6">
+          <div className="flex items-center text-xs md:text-sm text-gray-500 mb-4 space-x-4">
             <span>
               {new Date(article.createdAt).toLocaleDateString('en-US', {
                 year: 'numeric',
@@ -77,7 +76,7 @@ function TopArticleCard({ article }) {
             </span>
             <span className="flex items-center">
               <svg
-                className="w-3 h-3 sm:w-4 sm:h-4 mr-1"
+                className="w-3 h-3 md:w-4 md:h-4 mr-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -99,7 +98,7 @@ function TopArticleCard({ article }) {
             </span>
             <span className="flex items-center">
               <svg
-                className="w-3 h-3 sm:w-4 sm:h-4 mr-1"
+                className="w-3 h-3 md:w-4 md:h-4 mr-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -117,13 +116,13 @@ function TopArticleCard({ article }) {
 
           <Link
             href={`/blog/${article._id}`}
-            className="px-4 sm:px-6 py-1.5 sm:py-2 bg-[#51A94C] text-white rounded-lg hover:bg-[#4A8E45] transition-colors w-fit text-xs sm:text-sm"
+            className="px-4 py-2 bg-[#4caf4f] text-white rounded-md hover:bg-[#3d8b40] transition-colors w-fit text-sm"
           >
             Read Full Article
           </Link>
         </div>
       </div>
-    </div>
+    
   );
 }
 
@@ -131,17 +130,20 @@ export default async function TopArticle() {
   const topArticle = await getTopArticle();
 
   return (
-    <section className="bg-gray-50 dark:bg-[#25609A] py-8 sm:py-12">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-center mb-8 sm:mb-12 text-gray-900 dark:text-white">
+    <section className="bg-[#25609A] py-6">
+      <div className="mx-5 md:mx-12 lg:mx-32 mb-5">
+        <h1 className="text-2xl sm:text-3xl font-bold text-center text-white mb-2">
           Top Article
         </h1>
+        <p className="text-white text-center font-semibold mb-4 max-w-3xl mx-auto">
+          Our most popular article based on reader engagement
+        </p>
 
         {topArticle ? (
           <TopArticleCard article={topArticle} />
         ) : (
-          <div className="text-center py-10">
-            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
+          <div className="text-center py-10 bg-white rounded-lg shadow-sm">
+            <p className="text-gray-500">
               Currently no top article available. Check back later!
             </p>
           </div>

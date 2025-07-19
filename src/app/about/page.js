@@ -23,9 +23,11 @@ import {
 } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 import Image from 'next/image';
+import { FaFacebook } from "react-icons/fa";
 import OurteamBg from '../components/assets/our-team.png';
 import AbiskarImage from '../components/assets/Abiskar.jpg';
 import Abiskar2Image from '../components/assets/abiskar2.jpg';
+import Manish from '../components/assets/Manissh.jpeg';
 import Footer from '../components/footer/footer';
 import NavBar from '../components/header/navbar';
 
@@ -35,38 +37,38 @@ const AboutUs = () => {
       id: 1,
       name: 'Abiskar Poudel',
       position: 'CEO & Founder',
-      bio: 'Digital marketing expert with 10+ years of experience',
-      linkedin: '#',
-      twitter: '#',
+      bio: 'Inspiring leader for strategic growth, innovation and global business excellence.',
+      linkedin: 'https://www.linkedin.com/in/abiskar-poudel-1a4a28365?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
+      twitter: 'https://www.facebook.com/share/1CjLjcW62f/',
       image: AbiskarImage
     },
-    {
-      id: 2,
-      name: 'Abiskar Poudel',
-      position: 'CTO',
-      bio: 'Tech visionary specializing in web solutions',
-      linkedin: '#',
-      twitter: '#',
-      image: Abiskar2Image
-    },
+    // {
+    //   id: 2,
+    //   name: 'Abiskar Poudel',
+    //   position: 'CTO',
+    //   bio: 'Tech visionary specializing in web solutions',
+    //   linkedin: '#',
+    //   twitter: '#',
+    //   image: Abiskar2Image
+    // },
     {
       id: 3,
-      name: 'Abiskar Poudel',
+      name: 'Manish Khadka',
       position: 'Lead Developer',
-      bio: 'Full-stack developer with passion for clean code',
-      linkedin: '#',
-      twitter: '#',
-      image: AbiskarImage
+      bio: 'Full-stack developer with passion for clean code with 5+ of experience.',
+      linkedin: 'https://www.linkedin.com/in/manishkhadka1996/',
+      twitter: 'https://www.facebook.com/manishkhadka13',
+      image: Manish
     },
-    {
-      id: 4,
-      name: 'Abiskar Poudel',
-      position: 'Content Strategist',
-      bio: 'SEO and content writing specialist',
-      linkedin: '#',
-      twitter: '#',
-      image: Abiskar2Image
-    }
+    // {
+    //   id: 4,
+    //   name: 'Abiskar Poudel',
+    //   position: 'Content Strategist',
+    //   bio: 'SEO and content writing specialist',
+    //   linkedin: '#',
+    //   twitter: '#',
+    //   image: Abiskar2Image
+    // }
   ];
 
   const pdfTools = [
@@ -106,13 +108,13 @@ const AboutUs = () => {
             <div className='lg:w-1/2'>
               <h2 className='text-3xl font-bold text-[#25609A] mb-6'>Our Story</h2>
               <p className='text-gray-600 mb-4'>
-                Founded in 2015, we began as a small team of digital enthusiasts with a shared vision: to help businesses thrive in the online world. What started as a passion project has grown into a full-service digital agency serving clients across multiple industries.
+                Founded in 2020, we began as a small team of digital enthusiasts with a shared vision: to help businesses thrive in the online world. What started as a passion project has grown into a full-service digital agency serving clients across multiple industries.
               </p>
               <p className='text-gray-600 mb-4'>
                 Over the years, we’ve evolved our services to meet the changing needs of the digital landscape, but our core commitment remains the same — delivering measurable results through strategic, creative solutions.
               </p>
               <div className='bg-[#52aa4d] text-white p-4 rounded-lg inline-block'>
-                <span className='font-bold'>500+</span> Successful Projects Delivered
+                <span className='font-bold'>100+</span> Successful Projects Delivered
               </div>
             </div>
             <div className='lg:w-1/2'>
@@ -226,7 +228,7 @@ const AboutUs = () => {
           </div>
 
           {/* Meet the Team */}
-          <div className='mb-20'>
+          <div className='mb-20 '>
             <h2 className='text-3xl font-bold text-[#25609A] mb-12 text-center'>Meet Our Team</h2>
             <div className='grid sm:grid-cols-2 md:grid-cols-4 gap-6'>
               {teamMembers.map((member) => (
@@ -243,12 +245,17 @@ const AboutUs = () => {
                     <h3 className='font-bold text-lg text-[#25609A]'>{member.name}</h3>
                     <p className='text-[#52aa4d] text-sm mb-2'>{member.position}</p>
                     <p className='text-gray-600 text-sm'>{member.bio}</p>
-                    <div className='flex mt-3 space-x-2'>
+                    <div className='flex mt-3  space-x-2'>
                       <a href={member.linkedin} className='text-[#25609A] hover:text-[#52aa4d]'>
                         <FaLinkedin />
                       </a>
+                      <a href={member.facebook} className='text-[#25609A] hover:text-[#52aa4d]'>
+                        <FaFacebook />
+
+                      </a>
                       <a href={member.twitter} className='text-[#25609A] hover:text-[#52aa4d]'>
-                        <FaXTwitter />
+                        <FaFacebook />
+
                       </a>
                     </div>
                   </div>

@@ -2,49 +2,58 @@
 import React from 'react';
 import Image from 'next/image';
 import image from '../assets/image.png';
-import { AiOutlineArrowRight } from 'react-icons/ai'; // Import the arrow icon
+import { AiOutlineArrowRight } from 'react-icons/ai';
+import Link from 'next/link';
 
 const TopBody = () => {
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center text-center p-8 space-y-8 lg:space-y-0 lg:space-x-12">
-      {/* Left Side - Text Content */}
-      <div className="mx-3 md:mx-10 lg:mx-18">
-        {/* Main Heading */}
-        <h1 className="text-5xl md:text-5xl font-bold text-black leading-tight">
-          Place for your<br />One Step 
-        </h1>
+    <section className="bg-gray-50">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-8 lg:px-10 py-12 md:py-16 lg:py-20">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
+          {/* Text Content - Left Side */}
+          <div className="w-full lg:w-1/2 text-center lg:text-left">
+            <div className="space-y-4 md:space-y-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                Place for your<br className="hidden lg:block" />One Step 
+              </h1>
+              
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#4caf4f]">
+                Solutions
+              </h2>
+              
+              <p className="text-base md:text-lg text-gray-600 max-w-[500px] mx-auto lg:mx-0">
+                A vibrant hub for tools, content & services that empower your business
+              </p>
+              
+              <div className="pt-2 md:pt-4">
+                <Link
+                  href="/contact"
+                  className="group inline-flex items-center justify-center gap-2 rounded-lg bg-[#4caf4f] px-6 py-3 text-white shadow-md transition-all hover:bg-[#3d8b40] hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#4caf4f] focus:ring-offset-2"
+                >
+                  <span className="text-sm sm:text-base font-medium">Contact Us</span>
+                  <AiOutlineArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+          </div>
 
-        {/* Sub Heading */}
-        <h2 className="text-3xl md:text-6xl font-semibold text-[#4caf4f] mt-4">
-        Solutions
-        </h2>
-
-        {/* Description */}
-        <p className="text-lg md:text-xl text-gray-600 mt-4 max-w-[600px] mx-auto">
-         A Vibrant hub for tools, content & services
-        </p>
-
-        {/* Register Button */}
-        <a
-          href="/contact"
-          className="bg-[#4caf4f] text-white py-3 px-8 rounded-lg mt-6 inline-flex items-center justify-center space-x-2 text-lg hover:bg-[#6a9b52] transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-[#4caf4f] focus:ring-offset-2"
-        >
-          <span>Contact Us</span>
-          <AiOutlineArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-        </a>
+          {/* Image - Right Side */}
+          <div className="w-full lg:w-1/2">
+            <div className="relative aspect-square w-full max-w-md mx-auto overflow-hidden rounded-xl shadow-xl">
+              <Image
+                src={image}
+                alt="Digital solutions illustration"
+                fill
+                priority
+                quality={90}
+                className="object-cover"
+                sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 40vw"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-
-      {/* Right Side - Image */}
-      <div className="lg:w-1/2 mt-8 lg:mt-0 flex justify-center">
-        <Image
-          src={image}
-          alt="Digital Service"
-          width={400}
-          height={300}
-          className="rounded-lg object-cover w-full max-w-[300px] md:max-w-[350px] lg:max-w-[400px] h-auto shadow-lg"
-        />
-      </div>
-    </div>
+    </section>
   );
 };
 

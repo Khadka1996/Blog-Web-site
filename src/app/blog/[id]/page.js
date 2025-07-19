@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation';
 
 async function getBlogData(id) {
   try {
-    const res = await fetch(`http://localhost:5000/api/blogs/${id}`, {
+    const res = await fetch(`https://api.everestkit.com/api/blogs/${id}`, {
       next: { revalidate: 60 },
     });
 
@@ -55,7 +55,7 @@ export default async function BlogArticle({ params }) {
     if (!blog?.data) return notFound();
 
     const blogData = blog.data;
-    const shareUrl = `http://localhost:3000/blogs/${id}`;
+    const shareUrl = `https://everestkit.com/blogs/${id}`;
 
     const socialLinks = {
       facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
@@ -139,7 +139,7 @@ export default async function BlogArticle({ params }) {
                 {blogData.image && (
                   <div className="relative h-64 md:h-96 w-full mb-8 rounded-lg overflow-hidden">
                     <Image
-                      src={`http://localhost:5000/uploads/${blogData.image}`}
+                      src={`https://api.everestkit.com/uploads/${blogData.image}`}
                       alt={blogData.title}
                       fill
                       className="object-cover"
@@ -205,7 +205,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: blogData.title,
       description: blogData.subheading || blogData.title,
-      images: blogData.image ? [`http://localhost:5000/uploads/${blogData.image}`] : [],
+      images: blogData.image ? [`https://api.everestkit.com/uploads/${blogData.image}`] : [],
       url: `/blogs/${id}`,
       type: 'article',
     },

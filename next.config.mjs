@@ -1,39 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb' // Keep for file uploads
-    }
-  },
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '5000',
-        pathname: '/uploads/**',
+        protocol: 'https',
+        hostname: 'api.everestkit.com',
+        pathname: '/**',
       },
-      // Add other domains if needed for production
-      // {
-      //   protocol: 'https',
-      //   hostname: 'your-production-domain.com',
-      //   pathname: '/uploads/**',
-      // },
     ],
   },
   async rewrites() {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://localhost:5000/api/:path*' // Proxy to Express
+        destination: 'https://api.everestkit.com/api/:path*', // Proxy to backend
       },
-      // Optional: Rewrite for image uploads if needed
-      // {
-      //   source: '/uploads/:path*',
-      //   destination: 'http://localhost:5000/uploads/:path*'
-      // }
+      {
+        source: '/uploads/:path*',
+        destination: 'https://api.everestkit.com/uploads/:path*', // Image access
+      },
     ]
-  }
+  },
 }
 
 export default nextConfig

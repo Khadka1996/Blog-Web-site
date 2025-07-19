@@ -1,3 +1,6 @@
+// Force dynamic rendering to allow fetch with revalidate: 0
+export const dynamic = "force-dynamic";
+
 import ArticleBody from './components/body/articleBody';
 import ArticlePart from './components/body/articlePart';
 import ContactUs from './components/body/contactUs';
@@ -6,7 +9,7 @@ import OurTools from './components/body/ourTools';
 import TopBody from './components/body/topbody';
 import Footer from './components/footer/footer';
 import NavBar from './components/header/navbar';
-import WhatsAppButton from './components/WhatsAppButton.js'; // Import the new component
+import WhatsAppButton from './components/WhatsAppButton.js';
 
 const Page = () => {
   return (

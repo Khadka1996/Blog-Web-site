@@ -167,7 +167,7 @@ I’m impressed by your client success stories and want to know more.`;
           <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
             <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-[#52aa4d] flex flex-col items-center">
               <FaUsers className="text-5xl text-[#25609A] mb-3" />
-              <span className="text-5xl font-extrabold text-[#25609A]">500+</span>
+              <span className="text-5xl font-extrabold text-[#25609A]">100+</span>
               <span className="mt-1 text-gray-700">Happy Clients</span>
             </div>
             <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-[#52aa4d] flex flex-col items-center">
@@ -177,7 +177,7 @@ I’m impressed by your client success stories and want to know more.`;
             </div>
             <div className="bg-white p-8 rounded-xl shadow-md border-t-4 border-[#52aa4d] flex flex-col items-center">
               <FaCheckCircle className="text-5xl text-[#25609A] mb-3" />
-              <span className="text-5xl font-extrabold text-[#25609A]">1200+</span>
+              <span className="text-5xl font-extrabold text-[#25609A]">500+</span>
               <span className="mt-1 text-gray-700">Projects Delivered</span>
             </div>
           </div>

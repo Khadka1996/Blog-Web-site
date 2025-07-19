@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaShieldAlt, FaUserLock, FaCookie, FaQuestionCircle, FaEnvelope, FaCheck, FaSpinner, FaTimes } from 'react-icons/fa';
 import Head from 'next/head';
 import NavBar from '@/app/components/header/navbar';
@@ -12,13 +12,34 @@ const PrivacyPolicy = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [activeHash, setActiveHash] = useState('');
+  const [lastUpdatedDate, setLastUpdatedDate] = useState('');
+
+  // Initialize states on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setActiveHash(window.location.hash);
+      setLastUpdatedDate(new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      }));
+
+      const handleHashChange = () => {
+        setActiveHash(window.location.hash);
+      };
+
+      window.addEventListener('hashchange', handleHashChange);
+      return () => window.removeEventListener('hashchange', handleHashChange);
+    }
+  }, []);
 
   const companyInfo = {
-    name: process.env.NEXT_PUBLIC_COMPANY_NAME || '[Your Company Name]',
-    website: process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://yourwebsite.com',
-    address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || '[Your Company Address], Nepal',
-    phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || '[Your Contact Number]',
-    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'privacy@yourcompany.com',
+    name: process.env.NEXT_PUBLIC_COMPANY_NAME || 'EverestKit',
+    website: process.env.NEXT_PUBLIC_WEBSITE_URL || 'https://everestkit.com',
+    address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || 'Kathmandu, Nepal',
+    phone: process.env.NEXT_PUBLIC_CONTACT_PHONE || '',
+    email: process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'mail@everestkit.com',
   };
 
   const sections = [
@@ -29,7 +50,7 @@ const PrivacyPolicy = () => {
     { id: 'data-protection', title: 'Data Protection in Nepal', icon: <FaShieldAlt /> },
     { id: 'your-rights', title: 'Your Privacy Rights', icon: <FaShieldAlt /> },
     { id: 'security', title: 'Security of Your Information', icon: <FaShieldAlt /> },
-    { id: 'children-privacy', title: 'Children’s Privacy', icon: <FaShieldAlt /> },
+    { id: 'children-privacy', title: 'Childrens Privacy', icon: <FaShieldAlt /> },
     { id: 'changes', title: 'Changes to This Privacy Policy', icon: <FaShieldAlt /> },
     { id: 'contact', title: 'Contact Us', icon: <FaQuestionCircle /> },
   ];
@@ -105,7 +126,7 @@ const PrivacyPolicy = () => {
         <title>Privacy Policy | {companyInfo.name}</title>
         <meta
           name="description"
-          content={`Learn how ${companyInfo.name} protects your privacy in compliance with Nepal’s Individual Privacy Act, 2018, and the Constitution of Nepal.`}
+          content={`Learn how ${companyInfo.name} protects your privacy in compliance with Nepal's Individual Privacy Act, 2018, and the Constitution of Nepal.`}
         />
         <meta
           name="keywords"
@@ -114,7 +135,7 @@ const PrivacyPolicy = () => {
         <meta property="og:title" content={`Privacy Policy | ${companyInfo.name}`} />
         <meta
           property="og:description"
-          content={`Understand ${companyInfo.name}'s commitment to protecting your personal information under Nepal’s legal framework.`}
+          content={`Understand ${companyInfo.name}'s commitment to protecting your personal information under Nepal's legal framework.`}
         />
         <meta property="og:url" content={`${companyInfo.website}/privacy-policy`} />
         <meta property="og:image" content={`${companyInfo.website}/og-image.jpg`} />
@@ -133,7 +154,7 @@ const PrivacyPolicy = () => {
               Privacy Policy
             </h1>
             <p className="text-lg text-gray-600">
-              Last Updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+              Last Updated: {lastUpdatedDate}
             </p>
           </div>
 
@@ -148,7 +169,7 @@ const PrivacyPolicy = () => {
                       <a
                         href={`#${section.id}`}
                         className="flex items-center text-gray-700 hover:text-[#25609A] transition-colors duration-200"
-                        aria-current={window.location.hash === `#${section.id}` ? 'page' : undefined}
+                        aria-current={activeHash === `#${section.id}` ? 'page' : undefined}
                       >
                         <span className="mr-2 text-[#52aa4d]">{section.icon}</span>
                         {section.title}
@@ -161,6 +182,7 @@ const PrivacyPolicy = () => {
 
             {/* Main Content */}
             <div className="lg:w-3/4 space-y-8">
+              {/* Introduction Section */}
               <div
                 id="introduction"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -183,6 +205,7 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Information We Collect Section */}
               <div
                 id="information-we-collect"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -218,6 +241,7 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Use of Information Section */}
               <div
                 id="use-of-information"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -236,6 +260,7 @@ const PrivacyPolicy = () => {
                 </ul>
               </div>
 
+              {/* Disclosure Section */}
               <div
                 id="disclosure"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -248,7 +273,7 @@ const PrivacyPolicy = () => {
                 <h3 className="text-xl font-medium text-[#25609A] mb-3">Service Providers</h3>
                 <p className="text-gray-700 leading-relaxed mb-4">
                   We share data with third-party vendors (e.g., payment processors, hosting services) who
-                  comply with Nepal’s privacy laws and are contractually obligated to protect your data.
+                  comply with Nepal's privacy laws and are contractually obligated to protect your data.
                 </p>
 
                 <h3 className="text-xl font-medium text-[#25609A] mb-3">Legal Requirements</h3>
@@ -264,6 +289,7 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Data Protection Section */}
               <div
                 id="data-protection"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -288,6 +314,7 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Your Rights Section */}
               <div
                 id="your-rights"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -308,12 +335,13 @@ const PrivacyPolicy = () => {
                   </li>
                 </ul>
                 <p className="text-gray-700 leading-relaxed mt-4">
-                  To exercise these rights, contact us as outlined in the “Contact Us” section. Complaints
+                  To exercise these rights, contact us as outlined in the "Contact Us" section. Complaints
                   regarding data misuse can be filed with the district court within three months, as per
                   Section 29 of the Individual Privacy Act, 2018.
                 </p>
               </div>
 
+              {/* Security Section */}
               <div
                 id="security"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -332,11 +360,12 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Children's Privacy Section */}
               <div
                 id="children-privacy"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
-                <h2 className="text-2xl font-semibold text-[#25609A] mb-4">Children’s Privacy</h2>
+                <h2 className="text-2xl font-semibold text-[#25609A] mb-4">Children's Privacy</h2>
                 <p className="text-gray-700 leading-relaxed">
                   Our services are not intended for children under 16, as per the{' '}
                   <strong>Individual Privacy Act, 2018</strong>. We do not knowingly collect personal data
@@ -345,6 +374,7 @@ const PrivacyPolicy = () => {
                 </p>
               </div>
 
+              {/* Changes Section */}
               <div
                 id="changes"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -352,11 +382,12 @@ const PrivacyPolicy = () => {
                 <h2 className="text-2xl font-semibold text-[#25609A] mb-4">Changes to This Privacy Policy</h2>
                 <p className="text-gray-700 leading-relaxed">
                   We may update this Privacy Policy to reflect changes in our practices or legal
-                  requirements. Updates will be posted on this page with a revised “Last Updated” date. We
+                  requirements. Updates will be posted on this page with a revised "Last Updated" date. We
                   encourage you to review this policy periodically.
                 </p>
               </div>
 
+              {/* Contact Section */}
               <div
                 id="contact"
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300"
@@ -371,7 +402,11 @@ const PrivacyPolicy = () => {
                 <p className="text-gray-700 leading-relaxed mb-6">
                   <span className="font-medium">Email:</span> {companyInfo.email}<br />
                   <span className="font-medium">Address:</span> {companyInfo.address}<br />
-                  <span className="font-medium">Phone:</span> {companyInfo.phone}
+                  {companyInfo.phone && (
+                    <>
+                      <span className="font-medium">Phone:</span> {companyInfo.phone}
+                    </>
+                  )}
                 </p>
                 <button
                   onClick={openContactModal}
@@ -399,7 +434,7 @@ const PrivacyPolicy = () => {
               <div className="flex justify-between items-start mb-6">
                 <div>
                   <h2 className="text-2xl font-bold text-[#25609A]">Privacy Inquiry</h2>
-                  <p className="text-gray-600 mt-2">We’ll respond to your inquiry promptly.</p>
+                  <p className="text-gray-600 mt-2">We'll respond to your inquiry promptly.</p>
                 </div>
                 <button
                   onClick={closeModal}

@@ -1,21 +1,22 @@
 import React from "react";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa"; // Import social media icons
+import { FaFacebook, FaTiktok, FaInstagram, FaLinkedin } from "react-icons/fa"; // Import social media icons
+import { IoLogoYoutube } from "react-icons/io";
 
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-5 md:mx-12 lg:mx-32 mt-5">
         {/* Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Logo and Description */}
           <div className="col-span-1">
             <div className="flex items-center">
               <img
-                src="/logo.png" // Replace with your logo path
+                src="/logos.png" 
                 alt="Company Logo"
                 className="h-12 w-auto"
               />
-              <span className="ml-2 text-xl font-bold">Your Brand</span>
+              <span className="ml-2 text-xl font-bold">EverestKit</span>
             </div>
             <p className="mt-4 text-gray-400">
               Empowering businesses with innovative solutions.
@@ -54,7 +55,7 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
             <div className="flex space-x-4">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/share/1As145MKwz/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white"
@@ -62,29 +63,30 @@ const Footer = () => {
                 <FaFacebook className="w-6 h-6" />
               </a>
               <a
-                href="https://twitter.com"
+                href="https://www.tiktok.com/@everestkit?lang=en"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white"
               >
-                <FaTwitter className="w-6 h-6" />
+                <FaTiktok className="w-6 h-6" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://youtube.com/@everestkit?si=HOzRe-5ao8ghh2C6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white"
+              >
+                <IoLogoYoutube className="w-6 h-6" />
+              </a>
+              <a
+                href="https://www.instagram.com/everestkit1/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white"
               >
                 <FaInstagram className="w-6 h-6" />
               </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white"
-              >
-                <FaLinkedin className="w-6 h-6" />
-              </a>
+            
             </div>
           </div>
 

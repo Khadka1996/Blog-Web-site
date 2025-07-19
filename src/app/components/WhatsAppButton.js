@@ -17,7 +17,7 @@ export default function WhatsAppButton() {
   }, []);
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = '9779823153502';
+    const phoneNumber = '9779815817938';
     const message = 'Hello! I have a question.';
     
     if (isMobile) {

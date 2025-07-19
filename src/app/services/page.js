@@ -305,16 +305,12 @@ export default function ServicesPage() {
                       <h3 className="font-semibold text-[#25609A] mb-3 text-center">Key Features</h3>
                       <ul className="space-y-3">
                         {service.features.slice(0, 3).map((feature, index) => (
-                          <li key={index} className="flex items-center justify-center text-gray-700">
+                          <li key={index} className="flex items-center  text-gray-700">
                             <FaCheckCircle className="text-[#52aa4d] mr-2" />
                             <span>{feature}</span>
                           </li>
                         ))}
-                        {service.features.length > 3 && (
-                          <li className="text-sm text-gray-500 text-center">
-                            +{service.features.length - 3} more features
-                          </li>
-                        )}
+                       
                       </ul>
                     </div>
 

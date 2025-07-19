@@ -12,7 +12,7 @@ const ContactUs = () => {
   const [message, setMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
-  const whatsappId = "982315502"; 
+  const whatsappId = "9779815817938"; 
 
   useEffect(() => {
     const checkIfMobile = () => {

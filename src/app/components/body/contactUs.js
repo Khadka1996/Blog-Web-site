@@ -7,7 +7,7 @@ const ContactUs = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const whatsappId = "9823153502"; 
+  const whatsappId = "9779815817938"; 
   // Function to handle sending the message via WhatsApp
   const handleSendMessage = () => {
     const encodedMessage = encodeURIComponent(
@@ -18,7 +18,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="mx-3 md:mx-10 lg:mx-18">
+    <div className="mx-5 md:mx-12 lg:mx-32 mt-5">
 
     <div className=" flex items-center justify-center p-2">
       <div className="bg-white rounded-lg shadow-lg w-full flex flex-col md:flex-row">

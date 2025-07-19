@@ -1,23 +1,54 @@
 import { FaFilePdf, FaFileWord, FaDownload, FaFilePowerpoint, FaFileExcel, FaImage, FaEdit, FaFileAlt, FaPaste, FaCropAlt } from "react-icons/fa";
 import { MdMergeType, MdCompress } from "react-icons/md";
+import { FaCalendarAlt, FaSortAlphaDown, FaCalculator, FaMoneyBillWave, FaClock,FaFont  } from "react-icons/fa"; // Import relevant icons
 
 const tools = [
   { icon: <MdMergeType className="text-[#4caf4f] text-4xl" />, title: "Merge PDF", description: "Combine PDFs in the order you want with the easiest PDF merger available." },
   { icon: <FaFilePdf className="text-[#4caf4f] text-4xl" />, title: "Split PDF", description: "Separate one page or a whole set for easy conversion into independent PDF files." },
   { icon: <FaFileAlt className="text-[#4caf4f] text-4xl" />, title: "Compress PDF", description: "Reduce file size while optimizing for maximal PDF quality." },
-  { icon: <FaFileWord className="text-[#4caf4f] text-4xl" />, title: "PDF to Word", description: "Convert PDFs to easy-to-edit DOC and DOCX documents with high accuracy." },
-  { icon: <FaFilePowerpoint className="text-[#4caf4f] text-4xl" />, title: "PDF to PowerPoint", description: "Turn your PDFs into PPT and PPTX slideshows effortlessly." },
-  { icon: <FaFileExcel className="text-[#4caf4f] text-4xl" />, title: "PDF to Excel", description: "Extract data from PDFs into Excel spreadsheets in seconds." },
+  // { icon: <FaFileWord className="text-[#4caf4f] text-4xl" />, title: "PDF to Word", description: "Convert PDFs to easy-to-edit DOC and DOCX documents with high accuracy." },
+  // { icon: <FaFilePowerpoint className="text-[#4caf4f] text-4xl" />, title: "PDF to PowerPoint", description: "Turn your PDFs into PPT and PPTX slideshows effortlessly." },
+  // { icon: <FaFileExcel className="text-[#4caf4f] text-4xl" />, title: "PDF to Excel", description: "Extract data from PDFs into Excel spreadsheets in seconds." },
   { icon: <FaImage  className="text-[#4caf4f] text-4xl" />, title: "Photo to PDF", description: "Crop your images with precision to highlight the perfect area." },
-  { icon: <FaFileWord className="text-[#4caf4f] text-4xl" />, title: "Word to PDF", description: "Convert DOC and DOCX files to PDF for easier reading." },
-  { icon: <FaFilePowerpoint className="text-[#4caf4f] text-4xl" />, title: "PowerPoint to PDF", description: "Convert PPT and PPTX slideshows to PDF for easy viewing." },
-  { icon: <FaFileExcel className="text-[#4caf4f] text-4xl" />, title: "Excel to PDF", description: "Convert EXCEL spreadsheets to PDF for better readability." },
+  // { icon: <FaFileWord className="text-[#4caf4f] text-4xl" />, title: "Word to PDF", description: "Convert DOC and DOCX files to PDF for easier reading." },
+  // { icon: <FaFilePowerpoint className="text-[#4caf4f] text-4xl" />, title: "PowerPoint to PDF", description: "Convert PPT and PPTX slideshows to PDF for easy viewing." },
+  // { icon: <FaFileExcel className="text-[#4caf4f] text-4xl" />, title: "Excel to PDF", description: "Convert EXCEL spreadsheets to PDF for better readability." },
   { icon: <FaEdit className="text-[#4caf4f] text-4xl" />, title: "Edit PDF", description: "Add text, images, shapes, or freehand annotations to PDFs." },
   { icon: <FaImage className="text-[#4caf4f] text-4xl" />, title: "PDF to JPG", description: "Convert each PDF page into JPG or extract images from PDFs." },
   { icon: <FaPaste className="text-[#4caf4f] text-4xl" />, title: "Watermark", description: "Add an image or text watermark to your PDFs easily." },
   { icon: <FaDownload className="text-[#4caf4f] text-4xl" />, title: "Video Downloader", description: "Download videos from various platforms in different formats and qualities." },
   { icon: <MdCompress className="text-[#4caf4f] text-4xl" />, title: "Photo Size Reducer", description: "Reduce photo file size without losing quality for easy sharing." },
   { icon: <FaCropAlt className="text-[#4caf4f] text-4xl" />, title: "Photo Cropper", description: "Crop your images with precision to highlight the perfect area." },
+  {
+    icon: <FaCalendarAlt className="text-[#2196f3] text-4xl" />,
+    title: "Date Converter",
+    description: "Convert dates between calendars with ease and accuracy.",
+  },
+  {
+    icon: <FaSortAlphaDown className="text-[#ff9800] text-4xl" />,
+    title: "Word Counter",
+    description: "Count words and characters in your text instantly.",
+  },
+  {
+    icon: <FaCalculator className="text-[#9c27b0] text-4xl" />,
+    title: "Calculator",
+    description: "Perform basic and scientific calculations quickly.",
+  },
+  {
+    icon: <FaMoneyBillWave className="text-[#f44336] text-4xl" />,
+    title: "Currency Converter",
+    description: "Convert currencies in real-time using the latest exchange rates.",
+  },
+  {
+    icon: <FaClock className="text-[#3f51b5] text-4xl" />,
+    title: "Time Zone Converter",
+    description: "Compare time zones and plan meetings across different countries.",
+  },
+  {
+    icon: <FaFont className="text-[#795548] text-4xl" />,
+    title: "Nepali Fonts Tool",
+    description: "Convert Preeti to Unicode or explore popular Nepali fonts easily.",
+  },
 ];
 
 export default function Tools() {
