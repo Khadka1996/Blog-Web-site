@@ -1,213 +1,264 @@
 // src/app/blog/[id]/page.js
-
 import { FaFacebook, FaTwitter, FaWhatsapp, FaPinterest, FaQuora } from 'react-icons/fa';
-import CommentSection from './CommentSection';
 import NavBar from '@/app/components/header/navbar';
 import Footer from '@/app/components/footer/footer';
 import TopArticle from '@/app/components/body/articlePart';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import CommentSection from './CommentSection';
+import AdWrapper from '@/app/components/ads/GoogleAdWrapper';
+
+// Helper functions
+const stripHtmlTags = (html) => {
+  if (!html) return '';
+  return html.replace(/<[^>]+>/g, '').substring(0, 160);
+};
+
+const formatDate = (dateString) => {
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
 
 async function getBlogData(id) {
   try {
     const res = await fetch(`https://api.everestkit.com/api/blogs/${id}`, {
-      next: { revalidate: 60 },
+      next: { 
+        revalidate: 120, // ISR: Revalidate every 120 seconds
+        tags: [`blog-${id}`] // For on-demand revalidation
+      }
     });
 
     if (!res.ok) {
-      if (res.status === 404) return notFound();
-      throw new Error('Failed to fetch blog data');
+      if (res.status === 404) return null;
+      throw new Error(`Failed to fetch blog: ${res.statusText}`);
     }
 
     return res.json();
-  } catch {
-    throw notFound();
-  }
-}
-
-async function getGoogleAds() {
-  const ads = {
-    top: { __html: '<script>console.log("Google Ad - Top")</script>' },
-    left: { __html: '<script>console.log("Google Ad - Left")</script>' },
-    right: { __html: '<script>console.log("Google Ad - Right")</script>' },
-    bottom: { __html: '<script>console.log("Google Ad - Bottom")</script>' },
-  };
-
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  return Math.random() > 0.5 ? ads : null;
-}
-
-async function getUserData() {
-  // Implement user fetching logic (e.g., from session)
-  return null;
-}
-
-export default async function BlogArticle({ params }) {
-  const { id } = params;
-
-  try {
-    const [blog, googleAds, user] = await Promise.all([
-      getBlogData(id),
-      getGoogleAds(),
-      getUserData(),
-    ]);
-
-    if (!blog?.data) return notFound();
-
-    const blogData = blog.data;
-    const shareUrl = `https://everestkit.com/blogs/${id}`;
-
-    const socialLinks = {
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(blogData.title)}`,
-      whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${blogData.title} ${shareUrl}`)}`,
-      pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(blogData.title)}`,
-      quora: `https://www.quora.com/share?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(blogData.title)}`,
-    };
-
-    const renderAdPlaceholder = (position) => (
-      <div className={`bg-gray-200 flex items-center justify-center text-gray-600 ${position === 'top' || position === 'bottom' ? 'h-32' : 'h-96'}`}>
-        Placeholder Ad - {position.charAt(0).toUpperCase() + position.slice(1)}
-      </div>
-    );
-
-    const renderHTML = (htmlString) => (
-      <div dangerouslySetInnerHTML={{ __html: htmlString }} />
-    );
-
-    return (
-      <>
-        <div className="fixed top-0 left-0 w-full z-50">
-          <NavBar />
-        </div>
-
-        <div className="pt-16" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="mb-8">
-            {googleAds?.top ? <div dangerouslySetInnerHTML={googleAds.top} /> : renderAdPlaceholder('top')}
-          </div>
-
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="hidden lg:block lg:w-1/6">
-              {googleAds?.left ? <div dangerouslySetInnerHTML={googleAds.left} /> : renderAdPlaceholder('left')}
-            </div>
-
-            <div className="flex-1">
-              <article className="bg-white rounded-lg shadow-md p-6">
-                <header className="mb-8">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">{blogData.title}</h1>
-
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <div className="flex items-center text-gray-600">
-                      <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3a1 1 0 00.293.707l2 2a1 1 0 101.414-1.414L11 9.586V7z" clipRule="evenodd" />
-                      </svg>
-                      <span>{new Date(blogData.createdAt).toLocaleDateString()}</span>
-                    </div>
-
-                    <div className="flex items-center space-x-4">
-                      {Object.entries(socialLinks).map(([key, url]) => {
-                        const Icon = {
-                          facebook: FaFacebook,
-                          twitter: FaTwitter,
-                          whatsapp: FaWhatsapp,
-                          pinterest: FaPinterest,
-                          quora: FaQuora,
-                        }[key];
-
-                        return (
-                          <a
-                            key={key}
-                            href={url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-gray-600 hover:text-blue-600 transition duration-300"
-                            aria-label={`Share on ${key.charAt(0).toUpperCase() + key.slice(1)}`}
-                          >
-                            <Icon className="h-5 w-5" />
-                          </a>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <hr className="border-t border-gray-300 mb-6" />
-                  {blogData.subheading && <h2 className="text-xl text-gray-600 mb-8">{blogData.subheading}</h2>}
-                </header>
-
-                {blogData.image && (
-                  <div className="relative h-64 md:h-96 w-full mb-8 rounded-lg overflow-hidden">
-                    <Image
-                      src={`https://api.everestkit.com/uploads/${blogData.image}`}
-                      alt={blogData.title}
-                      fill
-                      className="object-cover"
-                      priority
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
-                  </div>
-                )}
-
-                <div className="prose prose-lg max-w-none mb-8">{renderHTML(blogData.content)}</div>
-
-                {blogData.youtubeLink && (
-                  <div className="mb-8 aspect-w-16 aspect-h-9">
-                    <iframe
-                      src={blogData.youtubeLink}
-                      title="YouTube video player"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-64 md:h-96 rounded-lg"
-                    />
-                  </div>
-                )}
-              </article>
-
-              <CommentSection blog={blogData} user={user} />
-            </div>
-
-            <div className="hidden lg:block lg:w-1/6">
-              {googleAds?.right ? <div dangerouslySetInnerHTML={googleAds.right} /> : renderAdPlaceholder('right')}
-            </div>
-          </div>
-
-          <div className="mt-8">
-            {googleAds?.bottom ? <div dangerouslySetInnerHTML={googleAds.bottom} /> : renderAdPlaceholder('bottom')}
-          </div>
-        </div>
-
-        <TopArticle />
-        <Footer />
-      </>
-    );
-  } catch {
-    return notFound();
+  } catch (error) {
+    console.error('Blog fetch error:', error);
+    return null;
   }
 }
 
 export async function generateMetadata({ params }) {
-  const { id } = params;
-  const blog = await getBlogData(id);
-
+  const blog = await getBlogData(params.id);
   if (!blog?.data) {
     return {
-      title: 'Blog Not Found',
+      title: 'Blog Not Found - EverestKit',
       description: "The blog article you're looking for doesn't exist.",
+      alternates: {
+        canonical: `/blogs/${params.id}`,
+      },
     };
   }
 
-  const blogData = blog.data;
+  const { title, subheading, content, image } = blog.data;
+  const cleanDescription = stripHtmlTags(content) || subheading || title;
+  const imageUrl = image 
+    ? `https://api.everestkit.com/uploads/${image}`
+    : '/default-blog-image.jpg';
 
   return {
-    title: blogData.title,
-    description: blogData.subheading || blogData.title,
+    title: `${title} | EverestKit`,
+    description: cleanDescription,
+    alternates: {
+      canonical: `/blogs/${params.id}`,
+    },
     openGraph: {
-      title: blogData.title,
-      description: blogData.subheading || blogData.title,
-      images: blogData.image ? [`https://api.everestkit.com/uploads/${blogData.image}`] : [],
-      url: `/blogs/${id}`,
+      title,
+      description: cleanDescription,
+      url: `https://everestkit.com/blogs/${params.id}`,
       type: 'article',
+      publishedTime: blog.data.createdAt,
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description: cleanDescription,
+      images: [imageUrl],
     },
   };
+}
+
+export default async function BlogArticle({ params }) {
+  const blog = await getBlogData(params.id);
+  if (!blog?.data) notFound();
+
+  const { 
+    title, 
+    subheading, 
+    content, 
+    image, 
+    createdAt, 
+    youtubeLink,
+    tags = [] 
+  } = blog.data;
+
+  const shareUrl = `https://everestkit.com/blogs/${params.id}`;
+
+  const socialLinks = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title)}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${title} ${shareUrl}`)}`,
+    pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(title)}`,
+    quora: `https://www.quora.com/share?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(title)}`,
+  };
+
+  return (
+    <>
+      <NavBar />
+      <div className="pt-16" />
+
+      {/* Top Ad */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <AdWrapper position="top" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-8">
+        {/* Left Sidebar Ad (Desktop only) */}
+        <div className="hidden lg:block lg:w-1/6">
+          <div className="sticky top-24">
+            <AdWrapper position="left" />
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <main className="flex-1">
+          <article className="bg-white rounded-lg shadow-md overflow-hidden">
+            {/* Article Header */}
+            <header className="p-6 md:p-8">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                {title}
+              </h1>
+              
+              {subheading && (
+                <h2 className="text-xl text-gray-600 mb-6">
+                  {subheading}
+                </h2>
+              )}
+
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div className="flex items-center text-gray-600">
+                  <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3a1 1 0 00.293.707l2 2a1 1 0 101.414-1.414L11 9.586V7z" clipRule="evenodd" />
+                  </svg>
+                  <time dateTime={createdAt}>{formatDate(createdAt)}</time>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="text-gray-600">Share:</span>
+                  <div className="flex gap-3">
+                    {Object.entries(socialLinks).map(([platform, url]) => {
+                      const Icon = {
+                        facebook: FaFacebook,
+                        twitter: FaTwitter,
+                        whatsapp: FaWhatsapp,
+                        pinterest: FaPinterest,
+                        quora: FaQuora,
+                      }[platform];
+
+                      return (
+                        <a
+                          key={platform}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                          aria-label={`Share on ${platform.charAt(0).toUpperCase() + platform.slice(1)}`}
+                        >
+                          <Icon className="h-5 w-5" />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            {/* Featured Image */}
+            {image && (
+              <div className="relative w-full h-64 md:h-96 mb-8">
+                <Image
+                  src={`https://api.everestkit.com/uploads/${image}`}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                />
+              </div>
+            )}
+
+            {/* Article Content */}
+            <div className="px-6 md:px-8 pb-8">
+              <div 
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: content }} 
+              />
+
+              {/* YouTube Embed */}
+              {youtubeLink && (
+                <div className="mt-8 aspect-w-16 aspect-h-9">
+                  <iframe
+                    src={youtubeLink}
+                    className="w-full h-64 md:h-96 rounded-lg"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              )}
+
+              {/* Tags */}
+              {tags.length > 0 && (
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {tags.map((tag) => (
+                    <span 
+                      key={tag}
+                      className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </article>
+
+          {/* Mid-Content Ad */}
+          <div className="my-8">
+            <AdWrapper position="mid" />
+          </div>
+
+          {/* Comments Section */}
+          <CommentSection blog={blog.data} />
+        </main>
+
+        {/* Right Sidebar Ad (Desktop only) */}
+        <div className="hidden lg:block lg:w-1/6">
+          <div className="sticky top-24">
+            <AdWrapper position="right" />
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom Ad */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <AdWrapper position="bottom" />
+      </div>
+
+      <TopArticle />
+      <Footer />
+    </>
+  );
 }
