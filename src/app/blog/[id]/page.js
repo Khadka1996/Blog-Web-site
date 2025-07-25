@@ -1,4 +1,3 @@
-// src/app/blog/[id]/page.js
 import { FaFacebook, FaTwitter, FaWhatsapp, FaPinterest, FaQuora } from 'react-icons/fa';
 import NavBar from '@/app/components/header/navbar';
 import Footer from '@/app/components/footer/footer';
@@ -18,7 +17,7 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   });
 };
 
@@ -26,9 +25,9 @@ async function getBlogData(id) {
   try {
     const res = await fetch(`https://api.everestkit.com/api/blogs/${id}`, {
       next: { 
-        revalidate: 120, // ISR: Revalidate every 120 seconds
-        tags: [`blog-${id}`] // For on-demand revalidation
-      }
+        revalidate: 120,
+        tags: [`blog-${id}`],
+      },
     });
 
     if (!res.ok) {
@@ -45,34 +44,36 @@ async function getBlogData(id) {
 
 export async function generateMetadata({ params }) {
   const blog = await getBlogData(params.id);
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://everestkit.com';
+
   if (!blog?.data) {
     return {
       title: 'Blog Not Found - EverestKit',
       description: "The blog article you're looking for doesn't exist.",
       alternates: {
-        canonical: `/blogs/${params.id}`,
+        canonical: new URL(`/blogs/${params.id}`, baseUrl).toString(),
       },
     };
   }
 
-  const { title, subheading, content, image } = blog.data;
+  const { title, subheading, content, image, createdAt } = blog.data;
   const cleanDescription = stripHtmlTags(content) || subheading || title;
   const imageUrl = image 
-    ? `https://api.everestkit.com/uploads/${image}`
-    : '/default-blog-image.jpg';
+    ? new URL(`/uploads/${image}`, 'https://api.everestkit.com').toString()
+    : new URL('/images/default-blog-image.jpg', baseUrl).toString();
 
   return {
     title: `${title} | EverestKit`,
     description: cleanDescription,
     alternates: {
-      canonical: `/blogs/${params.id}`,
+      canonical: new URL(`/blogs/${params.id}`, baseUrl).toString(),
     },
     openGraph: {
       title,
       description: cleanDescription,
-      url: `https://everestkit.com/blogs/${params.id}`,
+      url: new URL(`/blogs/${params.id}`, baseUrl).toString(),
       type: 'article',
-      publishedTime: blog.data.createdAt,
+      publishedTime: createdAt,
       images: [
         {
           url: imageUrl,
@@ -95,17 +96,9 @@ export default async function BlogArticle({ params }) {
   const blog = await getBlogData(params.id);
   if (!blog?.data) notFound();
 
-  const { 
-    title, 
-    subheading, 
-    content, 
-    image, 
-    createdAt, 
-    youtubeLink,
-    tags = [] 
-  } = blog.data;
-
-  const shareUrl = `https://everestkit.com/blogs/${params.id}`;
+  const { title, subheading, content, image, createdAt, youtubeLink, tags = [] } = blog.data;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://everestkit.com';
+  const shareUrl = new URL(`/blogs/${params.id}`, baseUrl).toString();
 
   const socialLinks = {
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
@@ -120,34 +113,26 @@ export default async function BlogArticle({ params }) {
       <NavBar />
       <div className="pt-16" />
 
-      {/* Top Ad */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <AdWrapper position="top" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-8">
-        {/* Left Sidebar Ad (Desktop only) */}
         <div className="hidden lg:block lg:w-1/6">
           <div className="sticky top-24">
             <AdWrapper position="left" />
           </div>
         </div>
 
-        {/* Main Content */}
         <main className="flex-1">
           <article className="bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Article Header */}
             <header className="p-6 md:p-8">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                 {title}
               </h1>
-              
               {subheading && (
-                <h2 className="text-xl text-gray-600 mb-6">
-                  {subheading}
-                </h2>
+                <h2 className="text-xl text-gray-600 mb-6">{subheading}</h2>
               )}
-
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div className="flex items-center text-gray-600">
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
@@ -155,7 +140,6 @@ export default async function BlogArticle({ params }) {
                   </svg>
                   <time dateTime={createdAt}>{formatDate(createdAt)}</time>
                 </div>
-
                 <div className="flex items-center gap-4">
                   <span className="text-gray-600">Share:</span>
                   <div className="flex gap-3">
@@ -167,7 +151,6 @@ export default async function BlogArticle({ params }) {
                         pinterest: FaPinterest,
                         quora: FaQuora,
                       }[platform];
-
                       return (
                         <a
                           key={platform}
@@ -186,7 +169,6 @@ export default async function BlogArticle({ params }) {
               </div>
             </header>
 
-            {/* Featured Image */}
             {image && (
               <div className="relative w-full h-64 md:h-96 mb-8">
                 <Image
@@ -200,14 +182,8 @@ export default async function BlogArticle({ params }) {
               </div>
             )}
 
-            {/* Article Content */}
             <div className="px-6 md:px-8 pb-8">
-              <div 
-                className="prose prose-lg max-w-none"
-                dangerouslySetInnerHTML={{ __html: content }} 
-              />
-
-              {/* YouTube Embed */}
+              <div className="prose prose-lg max-w-none" dangerouslySetInnerHTML={{ __html: content }} />
               {youtubeLink && (
                 <div className="mt-8 aspect-w-16 aspect-h-9">
                   <iframe
@@ -218,15 +194,10 @@ export default async function BlogArticle({ params }) {
                   />
                 </div>
               )}
-
-              {/* Tags */}
               {tags.length > 0 && (
                 <div className="mt-8 flex flex-wrap gap-2">
                   {tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm"
-                    >
+                    <span key={tag} className="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
                       #{tag}
                     </span>
                   ))}
@@ -235,16 +206,13 @@ export default async function BlogArticle({ params }) {
             </div>
           </article>
 
-          {/* Mid-Content Ad */}
           <div className="my-8">
             <AdWrapper position="mid" />
           </div>
 
-          {/* Comments Section */}
           <CommentSection blog={blog.data} />
         </main>
 
-        {/* Right Sidebar Ad (Desktop only) */}
         <div className="hidden lg:block lg:w-1/6">
           <div className="sticky top-24">
             <AdWrapper position="right" />
@@ -252,7 +220,6 @@ export default async function BlogArticle({ params }) {
         </div>
       </div>
 
-      {/* Bottom Ad */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <AdWrapper position="bottom" />
       </div>
